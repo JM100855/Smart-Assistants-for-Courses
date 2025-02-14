@@ -1,0 +1,1 @@
+This folder contains the final data after MinerU extraction, processing the extracted data with prompting techniques(Gemini API) and other methods, hyperparameter tuning, training and testing
