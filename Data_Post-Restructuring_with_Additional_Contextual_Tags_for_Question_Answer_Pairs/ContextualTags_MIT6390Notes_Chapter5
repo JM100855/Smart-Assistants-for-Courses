@@ -1,0 +1,1431 @@
+[
+    {
+        "type": "text",
+        "text": "Neural Networks ",
+        "page_idx": 0,
+        "tags": [
+            "introduction"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "You\u2019ve probably been hearing a lot about \u201cneural networks.\u201d Now that we have several useful machine-learning concepts (hypothesis classes, classification, regression, gradient descent, regularization, etc.) we are well equipped to understand neural networks in detail. ",
+        "page_idx": 0,
+        "tags": [
+            "introduction"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "This is, in some sense, the \u201cthird wave\u201d of neural nets. The basic idea is founded on the 1943 model of neurons of McCulloch and Pitts and the learning ideas of Hebb. There was a great deal of excitement, but not a lot of practical success: there were good training methods (e.g., perceptron) for linear functions, and interesting examples of non-linear functions, but no good way to train non-linear functions from data. Interest died out for a while, but was re-kindled in the 1980s when several people came up with a way to train neural networks with \u201cback-propagation,\u201d which is a particular style of implementing gradient descent, that we will study here. By the mid-90s, the enthusiasm waned again, because although we could train non-linear networks, the training tended to be slow and was plagued by a problem of getting stuck in local optima. Support vector machines ( SVM s) that use regularization of high-dimensional hypotheses by seeking to maximize the margin, and kernel methods that are an efficient and beautiful way of using feature transformations to non-linearly transform data into a higher-dimensional space, provided reliable learning methods with guaranteed convergence and no local optima. ",
+        "page_idx": 0,
+        "tags": [
+            "introduction"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "However, during the SVM enthusiasm, several groups kept working on neural networks, and their work, in combination with an increase in available data and computation, has made them rise again. They have become much more reliable and capable, and are now the method of choice in many applications. There are many, many variations of neural networks, which we can\u2019t even begin to survey. We will study the core \u201cfeed-forward\u201d networks with \u201cback-propagation\u201d training, and then, in later chapters, address some of the major advances beyond this core. ",
+        "page_idx": 0,
+        "tags": [
+            "introduction"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "We can view neural networks from several different perspectives: ",
+        "page_idx": 0,
+        "tags": [
+            "introduction"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "View 2 : A brain-inspired network of neuron-like computing elements that learn distributed representations. ",
+        "page_idx": 0,
+        "tags": [
+            "introduction"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "As with many good ideas in science, the basic idea for how to train non-linear neural networks with gradient descent was independently developed by more than one researcher. ",
+        "page_idx": 0,
+        "tags": [
+            "introduction"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "View 1 : An application of stochastic gradient descent for classification and regression with a potentially very rich hypothesis class. ",
+        "page_idx": 0,
+        "tags": [
+            "introduction"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "The number increases daily, as may be seen on arxiv.org .",
+        "page_idx": 0,
+        "tags": [
+            "introduction"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "View 3 : A method for building applications that make predictions based on huge amounts of data in very complex domains. ",
+        "page_idx": 0,
+        "tags": [
+            "introduction"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "We will mostly take view 1, with the understanding that the techniques we develop will enable the applications in view 3. View 2 was a major motivation for the early development of neural networks, but the techniques we will study do not seem to actually account for the biological learning processes in brains. ",
+        "page_idx": 1,
+        "tags": [
+            "introduction"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "The basic element of a neural network is a \u201cneuron,\u201d pictured schematically below. We will also sometimes refer to a neuron as a \u201cunit\u201d or \u201cnode.\u201d ",
+        "page_idx": 1,
+        "tags": [
+            "basic_element"
+        ]
+    },
+    {
+        "type": "image",
+        "img_path": "images/06cfe651736bc1aebe3581b5200789202d765114c49b1933adaca6965b8d887d.jpg",
+        "img_caption": [],
+        "img_footnote": [],
+        "page_idx": 1,
+        "tags": [
+            "basic_element"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Some prominent researchers are, in fact, working hard to find analogues of these methods in the brain. ",
+        "page_idx": 1,
+        "tags": [
+            "basic_element"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "It is a non-linear function of an input vector $\\mathbf{\\Delta}\\mathbf{x}\\in\\mathbb{R}^{\\mathrm{m}}$ to a single output value $\\mathbf{a}\\in\\mathbb{R}.$ . It is parameterized by a vector of weights $\\left(w_{1},\\ldots,w_{\\mathfrak{m}}\\right)\\in\\mathbb{R}^{\\mathfrak{m}}$ and an offset or threshold ${\\underline{{w_{0}\\in\\mathbb{R}}}}$ In order for the neuron to be non-linear, we also specify an activation function f:$\\colon\\mathbb{R}\\rightarrow\\mathbb{R},$ \u2192,which can be the identity ${\\boldsymbol{\\mathsf{f}}}({\\boldsymbol{\\mathsf{x}}})={\\boldsymbol{\\mathsf{x}}},$ in that case the neuron is a linear function of $x$ ), but can also be any other function, though we will only be able to work with it if it is differentiable. ",
+        "page_idx": 1,
+        "tags": [
+            "basic_element"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "The function represented by the neuron is expressed as: ",
+        "page_idx": 1,
+        "tags": [
+            "basic_element"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\mathbf{a}=\\mathbf{f}(z)=\\mathsf{f}\\left(\\left(\\sum_{\\mathrm{j}=1}^{\\mathrm{m}}x_{\\mathrm{j}}w_{\\mathrm{j}}\\right)+w_{0}\\right)=\\mathsf{f}(w^{\\mathsf{T}}x+w_{0})\\;\\mathrm{~.~}\n$$",
+        "text_format": "latex",
+        "page_idx": 1,
+        "tags": [
+            "basic_element"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Before thinking about a whole network, we can consider how to train a single unit. Given a loss function $\\mathcal{L}$ (guess, actual )and a dataset $\\{(\\mathbf{x}^{(1)},\\mathbf{y}^{(1)}),\\dots,(\\mathbf{x}^{(\\mathfrak{n})},\\mathbf{y}^{(\\mathfrak{n})})\\},$ we can do (stochastic) gradient descent, adjusting the weights $w,w_{0}$ to minimize ",
+        "page_idx": 1,
+        "tags": [
+            "basic_element"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\mathrm{J}(w,w_{0})=\\sum_{\\mathrm{i}}\\mathcal{L}\\left(\\mathrm{NN}(\\mathrm{x}^{(\\mathrm{i})};w,w_{0}),\\mathrm{y}^{(\\mathrm{i})}\\right)\\;,\n$$",
+        "text_format": "latex",
+        "page_idx": 1,
+        "tags": [
+            "basic_element"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "where NN is the output of our single-unit neural net for a given input. ",
+        "page_idx": 1,
+        "tags": [
+            "basic_element"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "We have already studied two special cases of the neuron: linear logistic classifiers (LLCs) with NLL loss and regressors with quadratic loss! The activation function for the LLC is $\\mathsf{f}(\\mathsf{x})=\\upsigma(\\mathsf{x})$ and for linear regression it is simply $\\mathbf{f}(\\mathbf{x})=\\mathbf{x}$ .",
+        "page_idx": 1,
+        "tags": [
+            "basic_element"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Study Question: Just for a single neuron, imagine for some reason, that we decide to use activation function $\\mathbf{f}(z)\\;=\\;e^{z}$ and loss function $\\mathcal{L}(\\mathrm{guess},\\mathrm{actual})\\;=\\;(\\mathrm{guess}\\;-$ actual )2 . Derive a gradient descent update for $_w$ and $w_{0}$ .",
+        "page_idx": 1,
+        "tags": [
+            "basic_element"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Now, we\u2019ll put multiple neurons together into a network . A neural network in general takes in an input $\\mathbf{\\Delta}\\mathbf{x}\\in\\mathbb{R}^{\\mathrm{m}}$ and generates an output $\\mathbf{a}\\in\\mathbb{R}^{\\mathrm{n}}$ . It is constructed out of multiple ",
+        "page_idx": 1,
+        "tags": [
+            "networks"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Sorry for changing our notation here. We were using das the dimension of the input, but we are trying to be consistent here with many other accounts of neural networks. It is impossible to be consistent with all of them though\u2014 there are many different ways of telling this story. ",
+        "page_idx": 1,
+        "tags": [
+            "networks"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "This   \nshould remind you of our \u03b8and $\\uptheta_{0}$ for linear models. neurons; the inputs of each neuron might be elements of $x$ and/or outputs of other neurons.   \nThe outputs are generated by noutput units .",
+        "page_idx": 1,
+        "tags": [
+            "networks"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "",
+        "page_idx": 2,
+        "tags": [
+            "networks"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "In this chapter, we will only consider feed-forward networks. In a feed-forward network, you can think of the network as defining a function-call graph that is acyclic : that is, the input to a neuron can never depend on that neuron\u2019s output. Data flows one way, from the inputs to the outputs, and the function computed by the network is just a composition of the functions computed by the individual neurons. ",
+        "page_idx": 2,
+        "tags": [
+            "networks"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Although the graph structure of a feed-forward neural network can really be anything (as long as it satisfies the feed-forward constraint), for simplicity in software and analysis, we usually organize them into layers . A layer is a group of neurons that are essentially \u201cin parallel\u201d: their inputs are outputs of neurons in the previous layer, and their outputs are the input to the neurons in the next layer. We\u2019ll start by describing a single layer, and then go on to the case of multiple layers. ",
+        "page_idx": 2,
+        "tags": [
+            "networks"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "A layer is a set of units that, as we have just described, are not connected to each other. The layer is called fully connected if, as in the diagram below, all of the inputs (i.e., $x_{1},x_{2},\\dotsc.x_{\\mathrm{m}}$ in this case) are connected to every unit in the layer. A layer has input $\\boldsymbol{x}\\in\\mathbb{R}^{\\mathrm{m}}$ and output (also known as activation )$\\mathbf{a}\\in\\mathbb{R}^{\\mathbf{n}}$ .",
+        "page_idx": 2,
+        "tags": [
+            "single_layer"
+        ]
+    },
+    {
+        "type": "image",
+        "img_path": "images/00be2ce3e50ccefce5cda9eeeb444f2419d4b35fc1b68d5012b8a2702a669438.jpg",
+        "img_caption": [],
+        "img_footnote": [],
+        "page_idx": 2,
+        "tags": [
+            "single_layer"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Since each unit has a vector of weights and a single offset, we can think of the weights of the whole layer as a matrix, $\\mathbf{\\boldsymbol{W}},$ and the collection of all the offsets as a vector $W_{0}$ . If we have minputs, nunits, and $\\boldsymbol{\\mathfrak{n}}$ outputs, then ",
+        "page_idx": 2,
+        "tags": [
+            "single_layer"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "\u2022$\\boldsymbol{W}$ is an $\\mathfrak{m}\\times\\mathfrak{n}$ matrix,   \n\u2022$W_{0}$ is an $n\\times1$ column vector,   \n\u2022X, the input, is an $\\mathfrak{m}\\times1$ column vector,   \n\u2022$\\begin{array}{r}{Z=W^{\\top}X+W_{0},}\\end{array}$ the pre-activation , is an $n\\times1$ column vector,   \n\u2022$A,$ the activation , is an $n\\times1$ column vector, ",
+        "page_idx": 2,
+        "tags": [
+            "single_layer"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "and the output vector is ",
+        "page_idx": 2,
+        "tags": [
+            "single_layer"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\mathsf{A}=\\mathsf{f}(Z)=\\mathsf{f}(W^{\\mathsf{T}}X+W_{0})\\ \\mathrm{~.~}\n$$",
+        "text_format": "latex",
+        "page_idx": 2,
+        "tags": [
+            "single_layer"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "The activation function fis applied element-wise to the pre-activation values Z.",
+        "page_idx": 2,
+        "tags": [
+            "single_layer"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Last Updated: 04/07/24 16:49:48 ",
+        "page_idx": 2,
+        "tags": [
+            "single_layer"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "A single neural network generally combines multiple layers, most typically by feeding the outputs of one layer into the inputs of another layer. ",
+        "page_idx": 3,
+        "tags": [
+            "many_layers"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "We have to start by establishing some nomenclature. We will use lto name a layer, and let ${\\mathfrak{m}}^{\\lfloor}$ be the number of inputs to the layer and ${\\mathfrak{n}}^{!}$ be the number of outputs from the layer. Then, $W^{\\lfloor}$ and $W_{0}^{\\tt l}$ are of shape $m^{1}\\times n^{1}$ and ${\\mathfrak{n}}^{!}\\times1.$ tively. Note that put to layer lis the output from layer $\\displaystyle\\ l-1,$ , so we have $\\mathfrak{m}^{\\mathtt{l}}=\\bar{\\mathfrak{n}}^{\\mathtt{l}-1}$ , and as a result $A^{1-1}$ is of shape ${\\mathfrak{m}}^{1}\\times1.$ , or equivalently $\\mathfrak{n}^{1-1}\\times1$ et $\\boldsymbol{\\mathrm{f}}^{\\intercal}$ be the activation function of layer l. Then, the pre-activation outputs are the $\\mathfrak{n}^{\\downarrow}\\times1$ \u00d71 vector ",
+        "page_idx": 3,
+        "tags": [
+            "many_layers"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\boldsymbol{Z}^{\\intercal}=\\boldsymbol{W}^{\\intercal}\\boldsymbol{\\mathrm{A}}^{\\intercal}+\\boldsymbol{W}_{0}^{\\intercal}\n$$",
+        "text_format": "latex",
+        "page_idx": 3,
+        "tags": [
+            "many_layers"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "and the activation outputs are simply the $\\mathfrak{n}^{\\downarrow}\\times1$ ",
+        "page_idx": 3,
+        "tags": [
+            "many_layers"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\mathsf{A}^{\\mathsf{l}}=\\mathsf{f}^{\\mathsf{l}}(Z^{\\mathsf{l}})\\ \\mathrm{~.~}\n$$",
+        "text_format": "latex",
+        "page_idx": 3,
+        "tags": [
+            "many_layers"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "It is technically possible to have different activation functions within the same layer, but, again, for convenience in specification and implementation, we generally have the same activation function within a layer. ",
+        "page_idx": 3,
+        "tags": [
+            "many_layers"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Here\u2019s a diagram of a many-layered network, with two blocks for each layer, one representing the linear part of the operation and one representing the non-linear activation function. We will use this structural decomposition to organize our algorithmic thinking and implementation. ",
+        "page_idx": 3,
+        "tags": [
+            "many_layers"
+        ]
+    },
+    {
+        "type": "image",
+        "img_path": "images/97431949f957a071119c31430dd051d1dfbda8e202a89150a08b0cba98316340.jpg",
+        "img_caption": [],
+        "img_footnote": [],
+        "page_idx": 3,
+        "tags": [
+            "many_layers"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "There are many possible choices for the activation function. We will start by thinking about whether it\u2019s really necessary to have an fat all. ",
+        "page_idx": 3,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "What happens if we let fbe the identity? Then, in a network with Llayers (we\u2019ll leave out $W_{0}$ for simplicity, but keeping it wouldn\u2019t change the form of this argument), ",
+        "page_idx": 3,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\mathsf{A}^{\\mathrm{L}}=\\mathsf{W}^{\\mathrm{L}^{\\top}}\\mathsf{A}^{\\mathrm{L}-1}=\\mathsf{W}^{\\mathrm{L}^{\\top}}\\mathsf{W}^{\\mathrm{L}-1^{\\top}}\\cdot\\cdot\\cdot\\mathsf{W}^{1^{\\top}}\\mathsf{X}\\enspace.\n$$",
+        "text_format": "latex",
+        "page_idx": 3,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "So, multiplying out the weight matrices, we find that ",
+        "page_idx": 3,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\mathsf{A}^{\\mathrm{L}}={W}^{\\mathrm{total}}\\mathsf{X}\\;\\,,\n$$",
+        "text_format": "latex",
+        "page_idx": 3,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "which is a linear function of X! Having all those layers did not change the representational capacity of the network: the non-linearity of the activation function is crucial. ",
+        "page_idx": 3,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Study Question: Convince yourself that any function representable by any number of linear layers (where fis the identity function) can be represented by a single layer. ",
+        "page_idx": 3,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Now that we are convinced we need a non-linear activation, let\u2019s examine a few common choices. These are shown mathematically below, followed by plots of these functions. ",
+        "page_idx": 3,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Step function: ",
+        "page_idx": 3,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n{\\mathrm{step}}(z)={\\left\\{\\begin{array}{l l}{0}&{{\\mathrm{if~}}z<0}\\\\ {1}&{{\\mathrm{otherwise}}}\\end{array}\\right.}\n$$",
+        "text_format": "latex",
+        "page_idx": 3,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Rectified linear unit (ReLU): ",
+        "page_idx": 4,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\mathrm{ReLU}(z)={\\left\\{\\begin{array}{l l}{0}&{{\\mathrm{if~}}z<0}\\\\ {z}&{{\\mathrm{otherwise}}}\\end{array}\\right.}=\\operatorname*{max}(0,z)\n$$",
+        "text_format": "latex",
+        "page_idx": 4,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Sigmoid function: Also known as a logistic function. This can sometimes be interpreted as probability, because for any value of $z$ the output is in $(0,1)$ :",
+        "page_idx": 4,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\upsigma(z)=\\frac{1}{1+e^{-z}}\n$$",
+        "text_format": "latex",
+        "page_idx": 4,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Hyperbolic tangent: Always in the range $(-1,1)$ :",
+        "page_idx": 4,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\operatorname{tanh}(z)={\\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}}}\n$$",
+        "text_format": "latex",
+        "page_idx": 4,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Softmax function: $(0,1)^{\\mathfrak{n}}$ with the property that Takes a whole vector $\\begin{array}{r}{\\sum_{\\mathrm{i=1}}^{\\mathrm{n}}{\\tt A}_{\\mathrm{i}}\\,=\\,1.}\\end{array}$ $Z\\,\\in\\,\\mathbb{R}^{\\mathfrak{n}}$ 1, which means we can interpret it as a and generates as output a vector $\\textsf{A}\\in$ probability distribution over nitems: ",
+        "page_idx": 4,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\mathrm{softmax}(z)=\\left[\\begin{array}{c}{\\exp(z_{1})/\\sum_{\\mathrm{i}}\\exp(z_{\\mathrm{i}})}\\\\ {\\vdots}\\\\ {\\exp(z_{\\mathrm{n}})/\\sum_{\\mathrm{i}}\\exp(z_{\\mathrm{i}})}\\end{array}\\right]\n$$",
+        "text_format": "latex",
+        "page_idx": 4,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "The original idea for neural networks involved using the step function as an activation, but because the derivative of the step function is zero everywhere except at the discontinuity (and there it is undefined), gradient-descent methods won\u2019t be useful in finding a good setting of the weights, and so we won\u2019t consider them further. They have been replaced, in a sense, by the sigmoid, ReLU, and tanh activation functions. ",
+        "page_idx": 4,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Study Question: Consider sigmoid, ReLU, and tanh activations. Which one is most like a step function? Is there an additional parameter you could add to a sigmoid that would make it be more like a step function? ",
+        "page_idx": 4,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Study Question: What is the derivative of the ReLU function? Are there some values of the input for which the derivative vanishes? ",
+        "page_idx": 5,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "ReLUs are especially common in internal (\u201chidden\u201d) layers, sigmoid activations are common for the output for binary classification, and softmax activations are common for the output for multi-class classification (see Section 4.3.2 for an explanation). ",
+        "page_idx": 5,
+        "tags": [
+            "choices_of_activation_function"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Different loss functions make different assumptions about the range of values they will get as input and, as we have seen, different activation functions will produce output values in different ranges. When you are designing a neural network, it\u2019s important to make these things fit together well. In particular, we will think about matching loss functions with the activation function in the last layer, fL. Here is a table of loss functions and activations that make sense for them: ",
+        "page_idx": 5,
+        "tags": [
+            "loss_functions_and_activation_functions"
+        ]
+    },
+    {
+        "type": "table",
+        "img_path": "images/2b6c1d580b7ae13d5ee119d7fb8d4bc195cb0fa973b41b18efafee1974b79ee6.jpg",
+        "table_caption": [],
+        "table_footnote": [],
+        "page_idx": 5,
+        "tags": [
+            "loss_functions_and_activation_functions"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "We explored squared loss in Chapter 2 and ( NLL and NLLM ) in Chapter 4. ",
+        "page_idx": 5,
+        "tags": [
+            "loss_functions_and_activation_functions"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "We will train neural networks using gradient descent methods. It\u2019s possible to use batch gradient descent, in which we sum up the gradient over all the points (as in Section 3.2 of chapter 3) or stochastic gradient descent ( SGD ), in which we take a small step with respect to the gradient considering a single point at a time (as in Section 3.4 of Chapter 3). ",
+        "page_idx": 5,
+        "tags": [
+            "error_back-propagation"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Our notation is going to get pretty hairy pretty quickly. To keep it as simple as we can, we\u2019ll focus on computing the contribution of one data point $x^{(\\mathrm{i})}$ to the gradient of the loss with respect to the weights, for SGD ; you can simply sum up these gradients over all the data points if you wish to do batch descent. ",
+        "page_idx": 5,
+        "tags": [
+            "error_back-propagation"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "So, to do SGD for a training ample $(x,y)$ , we need to compute $\\nabla_{W}\\mathcal{L}(\\mathrm{NN}(x;W),y),$ ,where Wrepresents all weights $W^{\\l^{\\l}}$ ,$W_{0}^{\\tt l}$ in all the layers $\\mathfrak{l}=(1,\\dotsc,\\mathtt{L})$ . This seems terrifying, but is actually quite easy to do using the chain rule. ",
+        "page_idx": 5,
+        "tags": [
+            "error_back-propagation"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Remember that we are always computing the gradient of the loss function with respect to the weights for a particular value of $(x,y)$ . That tells us how much we want to change the weights, in order to reduce the loss incurred on this particular training example. ",
+        "page_idx": 5,
+        "tags": [
+            "error_back-propagation"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Remember the chain rule! If ${\\mathfrak{a}}={\\mathfrak{f}}({\\mathfrak{b}})$ and $\\mathfrak{b}=\\mathfrak{g}(\\mathfrak{c})$ , so that $\\mathbf{a}=\\mathsf{f}(\\mathbf{g}(\\mathbf{c})),$ , then $\\begin{array}{r l}{\\frac{\\mathrm{d}\\mathbf{a}}{\\mathrm{d}\\mathbf{c}}}&{\\!\\!\\!=\\!\\!\\!}&{\\frac{\\mathrm{d}\\mathbf{a}}{\\mathrm{d}\\mathbf{b}}\\,\\mathrm{\\boldmath~\\cdot~}\\,\\frac{\\mathrm{d}\\mathbf{b}}{\\mathrm{d}\\mathbf{c}}\\mathrm{\\boldmath~\\cdot~}\\,}\\\\ {\\widehat{\\mathbf{f}}^{\\prime}(\\mathbf{b})\\mathbf{g}^{\\prime}(\\bar{\\mathbf{c}})\\mathrm{\\boldmath~\\cdot~}\\,\\frac{\\mathrm{d}\\mathbf{b}}{\\mathrm{\\boldmath~\\cdot~}\\mathrm{d}\\mathbf{c}}}\\end{array}$ $\\mathsf{f}^{\\prime}\\big(\\mathsf{g}(\\bar{\\mathsf{c}})\\big)\\mathsf{g}^{\\prime}(\\mathsf{c})$ .",
+        "page_idx": 5,
+        "tags": [
+            "error_back-propagation"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "To get some intuition for how these derivations work, we\u2019ll first suppose everything in our neural network is one-dimensional. In particular, we\u2019ll assume there are $\\mathfrak{m}^{\\bar{1}}=\\bar{1}$ inputs and $\\mathfrak{n}^{\\downarrow}=1$ outputs at every layer. So layer llooks like: ",
+        "page_idx": 5,
+        "tags": [
+            "first,_suppose_everything_is_one-dimensional"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\mathbf{a}^{\\mathbb{l}}=\\mathbf{f}^{\\mathbb{l}}(z^{\\mathbb{l}}),\\quad z^{\\mathbb{l}}=w^{\\mathbb{l}}\\mathbf{a}^{\\mathbb{l}-1}+w_{0}^{\\mathbb{l}}.\n$$",
+        "text_format": "latex",
+        "page_idx": 5,
+        "tags": [
+            "first,_suppose_everything_is_one-dimensional"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "In the equation above, we\u2019re using the lowercase letters $\\mathsf{a}^{1},z^{1},w^{1},\\mathsf{a}^{1-1},w_{0}^{1}$ to emphasize that all of these quantities are scalars just for the moment. We\u2019ll look at the more general matrix case below. ",
+        "page_idx": 5,
+        "tags": [
+            "first,_suppose_everything_is_one-dimensional"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "To use SGD , then, we want to compute $\\partial\\mathcal{L}(\\mathbf{NN}(x;W),y)/\\partial w^{\\mathrm{1}}$ and \u2202L(NN (x;W),y)/\u2202w l0 ",
+        "page_idx": 5,
+        "tags": [
+            "first,_suppose_everything_is_one-dimensional"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "for each layer land each data point $(x,y)$ . Below we\u2019ll write \u201closs\u201d as an abbreviation for $\\mathcal{L}(\\mathrm{NN}(x;W),y)$ . Then our first quantity of interest is $\\partial\\mathrm{loss}/\\partial{w^{\\mathrm{l}}}$ . The chain rule gives us the following. First, let\u2019s look at the case ${\\mathfrak{l}}={\\mathrm{L}}$ :",
+        "page_idx": 6,
+        "tags": [
+            "first,_suppose_everything_is_one-dimensional"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\begin{array}{r c l}{\\displaystyle\\frac{\\partial\\mathrm{loss}}{\\partial\\boldsymbol{w}^{\\mathrm{L}}}}&{=}&{\\displaystyle\\frac{\\partial\\mathrm{loss}}{\\partial\\boldsymbol{a}^{\\mathrm{L}}}\\cdot\\frac{\\partial\\boldsymbol{a}^{\\mathrm{L}}}{\\partial\\boldsymbol{z}^{\\mathrm{L}}}\\cdot\\frac{\\partial\\boldsymbol{z}^{\\mathrm{L}}}{\\partial\\boldsymbol{w}^{\\mathrm{L}}}}\\\\ &{=}&{\\displaystyle\\frac{\\partial\\mathrm{loss}}{\\partial\\boldsymbol{a}^{\\mathrm{L}}}\\cdot(\\boldsymbol{\\mathsf{f}}^{\\mathrm{L}})^{\\prime}(\\boldsymbol{z}^{\\mathrm{L}})\\cdot\\boldsymbol{\\mathsf{a}}^{\\mathrm{L}-1}.}\\end{array}\n$$",
+        "text_format": "latex",
+        "page_idx": 6,
+        "tags": [
+            "first,_suppose_everything_is_one-dimensional"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Now we can look at the case of general l:",
+        "page_idx": 6,
+        "tags": [
+            "first,_suppose_everything_is_one-dimensional"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\begin{array}{r c l}{\\displaystyle\\frac{\\partial\\mathrm{loss}}{\\partial\\boldsymbol{w}^{\\mathrm{l}}}}&{=}&{\\displaystyle\\frac{\\partial\\mathrm{loss}}{\\partial\\boldsymbol{\\mathrm{a}}^{\\mathrm{L}}}\\cdot\\frac{\\partial\\boldsymbol{\\mathrm{a}}^{\\mathrm{L}}}{\\partial z^{\\mathrm{L}}}\\cdot\\frac{\\partial\\boldsymbol{\\mathrm{a}}^{\\mathrm{L}-1}}{\\partial\\boldsymbol{\\mathrm{a}}^{\\mathrm{L}-1}}\\cdot\\frac{\\partial\\boldsymbol{\\mathrm{a}}^{\\mathrm{L}-1}}{\\partial z^{\\mathrm{L}-1}}\\cdot\\frac{\\partial\\boldsymbol{\\mathrm{a}}^{\\mathrm{L}+1}}{\\partial\\boldsymbol{\\mathrm{a}}^{\\mathrm{L}}}\\cdot\\frac{\\partial\\boldsymbol{\\mathrm{a}}^{\\mathrm{L}}}{\\partial z^{\\mathrm{l}}}}\\\\ &{=}&{\\displaystyle\\frac{\\partial\\mathrm{loss}}{\\partial\\boldsymbol{\\mathrm{a}}^{\\mathrm{L}}}\\cdot(\\mathbf{f}^{\\mathrm{L}})^{\\prime}(z^{\\mathrm{L}})\\cdot\\boldsymbol{w}^{\\mathrm{L}}\\cdot(\\mathbf{f}^{\\mathrm{L}-1})^{\\prime}(z^{\\mathrm{L}-1})\\cdot\\cdot\\cdot\\cdot\\boldsymbol{w}^{\\mathrm{L}+1}\\cdot(\\mathbf{f}^{\\mathrm{L}})^{\\prime}(z^{\\mathrm{L}})\\cdot\\boldsymbol{\\mathrm{a}}^{\\mathrm{L}-1}}\\\\ &{=}&{\\displaystyle\\frac{\\partial\\mathrm{loss}}{\\partial z^{\\mathrm{l}}}\\cdot\\boldsymbol{\\mathrm{a}}^{\\mathrm{L}-1}.}\\end{array}\n$$",
+        "text_format": "latex",
+        "page_idx": 6,
+        "tags": [
+            "first,_suppose_everything_is_one-dimensional"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Note that every multiplication above is scalar multiplication because every term in every product above is a scalar. And though we solved for all the other terms in the product, we haven\u2019t solved for $\\partial\\mathrm{loss}/\\partial{\\mathbf{a}}^{\\mathrm{L}}$ because the derivative will depend on which loss function you choose. Once you choose a loss function though, you should be able to compute this derivative. ",
+        "page_idx": 6,
+        "tags": [
+            "first,_suppose_everything_is_one-dimensional"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Study Question: Suppose you choose squared loss. What is \u2202loss /\u2202a L?",
+        "page_idx": 6,
+        "tags": [
+            "first,_suppose_everything_is_one-dimensional"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Study Question: Check the derivations above yourself. You should use the chain rule and also solve for the individual derivatives that arise in the chain rule. ",
+        "page_idx": 6,
+        "tags": [
+            "first,_suppose_everything_is_one-dimensional"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Study Question: Check that the the final layer ( $\\mathrm{\\Delta[l=L]}$ ) case is a special case of the general layer lcase above. ",
+        "page_idx": 6,
+        "tags": [
+            "first,_suppose_everything_is_one-dimensional"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Study Question: Derive $\\partial\\mathcal{L}(\\mathbf{NN}(x;W),y)/\\partial w_{0}^{\\mathrm{\\ell}}$ for yourself, for both the final layer $(\\boldsymbol{1}=\\boldsymbol{\\mathrm{L}})$ ) and general l.",
+        "page_idx": 6,
+        "tags": [
+            "first,_suppose_everything_is_one-dimensional"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Study Question: Does the ${\\mathrm{~L~}=\\,1}$ case remind you of anything from earlier in this course? ",
+        "page_idx": 6,
+        "tags": [
+            "first,_suppose_everything_is_one-dimensional"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Study Question: Write out the full SGD algorithm for this neural network. ",
+        "page_idx": 6,
+        "tags": [
+            "first,_suppose_everything_is_one-dimensional"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "It\u2019s pretty typical to run the chain rule from left to right like we did above. But, for where we\u2019re going next, it will be useful to notice that it\u2019s completely equivalent to write it in the other direction. So we can rewrite our result from above as follows: ",
+        "page_idx": 6,
+        "tags": [
+            "first,_suppose_everything_is_one-dimensional"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\begin{array}{r c l}{\\displaystyle\\frac{\\partial\\mathrm{loss}}{\\partial w^{\\mathrm{1}}}}&{=}&{\\displaystyle\\mathbf{a}^{\\mathrm{1-1}}\\cdot\\frac{\\partial\\mathrm{loss}}{\\partial z^{\\mathrm{1}}}}\\\\ {\\displaystyle\\frac{\\partial\\mathrm{loss}}{\\partial z^{\\mathrm{1}}}}&{=}&{\\displaystyle\\frac{\\partial\\mathbf{a}^{\\mathrm{1}}}{\\partial z^{\\mathrm{1}}}\\cdot\\frac{\\partial z^{\\mathrm{1+1}}}{\\partial\\mathbf{a}^{\\mathrm{1}}}\\cdot\\cdot\\cdot\\frac{\\partial\\mathbf{a}^{\\mathrm{L-1}}}{\\partial z^{\\mathrm{L-1}}}\\cdot\\frac{\\partial z^{\\mathrm{L}}}{\\partial\\mathbf{a}^{\\mathrm{L-1}}}\\cdot\\frac{\\partial\\mathbf{a}^{\\mathrm{L}}}{\\partial z^{\\mathrm{L}}}\\cdot\\frac{\\partial\\mathrm{loss}}{\\partial\\mathbf{a}^{\\mathrm{L}}}}\\\\ &{=}&{\\displaystyle\\frac{\\partial\\mathbf{a}^{\\mathrm{1}}}{\\partial z^{\\mathrm{1}}}\\cdot w^{\\mathrm{1+1}}\\cdot\\cdot\\cdot\\frac{\\partial\\mathbf{a}^{\\mathrm{L-1}}}{\\partial z^{\\mathrm{L-1}}}\\cdot w^{\\mathrm{L}}\\cdot\\frac{\\partial\\mathbf{a}^{\\mathrm{L}}}{\\partial z^{\\mathrm{L}}}\\cdot\\frac{\\partial\\mathrm{loss}}{\\partial\\mathbf{a}^{\\mathrm{L}}}.}\\end{array}\n$$",
+        "text_format": "latex",
+        "page_idx": 6,
+        "tags": [
+            "first,_suppose_everything_is_one-dimensional"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Next we\u2019re going to do everything that we did above, but this time we\u2019ll allow any number of inputs $\\mathfrak{m}^{\\bar{1}}$ and outputs $\\mathfrak{n}^{\\mathrm{i}}$ at every layer. First, we\u2019ll tell you the results that correspond to our derivations above. Then we\u2019ll talk about why they make sense. And finally we\u2019ll derive them carefully. ",
+        "page_idx": 6,
+        "tags": [
+            "the_general_case"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "OK, let\u2019s start with the results! Again, below we\u2019ll be using \u201closs\u201d as an abbreviation for $\\mathcal{L}(\\mathrm{NN}(x;W),y)$ ). Then, ",
+        "page_idx": 7,
+        "tags": [
+            "the_general_case"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\begin{array}{r c l}{\\displaystyle\\underbrace{\\frac{\\partial\\mathrm{loss}}{\\partial\\mathcal{W}^{\\mathrm{1}}}}_{\\mathrm{m}^{\\mathrm{1}}\\times\\mathrm{n}^{\\mathrm{1}}}}&{=}&{\\displaystyle\\underbrace{\\lambda^{\\mathrm{1-1}}}_{\\mathrm{m}^{\\mathrm{1}}\\times\\mathrm{n}^{\\mathrm{1}}}\\underbrace{\\left(\\frac{\\partial\\mathrm{loss}}{\\partial Z^{\\mathrm{1}}}\\right)^{\\mathrm{\\!\\!\\top}}}_{\\mathrm{1\\timesn}^{\\mathrm{1}}}}\\\\ {\\displaystyle\\frac{\\partial\\mathrm{loss}}{\\partial Z^{\\mathrm{1}}}}&{=}&{\\displaystyle\\frac{\\partial\\lambda^{\\mathrm{1}}}{\\partial Z^{\\mathrm{1}}}\\cdot\\frac{\\partial Z^{\\mathrm{1+1}}}{\\partial A^{\\mathrm{1}}}\\cdots\\cdot\\frac{\\partial A^{\\mathrm{L-1}}}{\\partial Z^{\\mathrm{L-1}}}\\cdot\\frac{\\partial Z^{\\mathrm{L}}}{\\partial A^{\\mathrm{L-1}}}\\cdot\\frac{\\partial A^{\\mathrm{L}}}{\\partial Z^{\\mathrm{L}}}\\cdot\\frac{\\partial\\mathrm{loss}}{\\partial A^{\\mathrm{L}}}}\\\\ &{=}&{\\displaystyle\\frac{\\partial A^{\\mathrm{1}}}{\\partial Z^{\\mathrm{1}}}\\cdot W^{\\mathrm{1+1}}\\cdots\\cdot\\frac{\\partial A^{\\mathrm{L-1}}}{\\partial Z^{\\mathrm{L-1}}}\\cdot W^{\\mathrm{L}}\\cdot\\frac{\\partial A^{\\mathrm{L}}}{\\partial Z^{\\mathrm{L}}}\\cdot\\frac{\\partial\\mathrm{loss}}{\\partial A^{\\mathrm{L}}}\\;.}\\end{array}\n$$",
+        "text_format": "latex",
+        "page_idx": 7,
+        "tags": [
+            "the_general_case"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "First, compare each equation to its one-dimensional counterpart, and make sure you see the similarities. That is, compare the general weight derivatives in Eq. 6.4 to the onedimensional case in Eq. 6.1. Compare the intermediate derivative of loss with respect to the pre-activations $Z^{1}$ in Eq. 6.5 to the one-dimensional case in Eq. 6.2. And finally compare the version where we\u2019ve substituted in some of the derivatives in Eq. 6.6 to Eq. 6.3. Hopefully you see how the forms are very analogous. But in the matrix case, we now have to be careful about the matrix dimensions. We\u2019ll check these matrix dimensions below. ",
+        "page_idx": 7,
+        "tags": [
+            "the_general_case"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Let\u2019s start by talking through each of the terms in the matrix version of these equations. Recall that loss is a scalar, and $W^{\\lfloor}$ is a matrix of size $\\mathfrak{m}^{\\mathrm{l}}\\times\\mathfrak{n}^{\\mathrm{l}}$ . You can read about the conventions in the course for derivatives starting in this chapter in Appendix A. By these conventions (not the only possible conventions!), we have that \u2202loss /$\\partial W^{\\l{1}}$ will be a matrix of size $m^{1}\\times n^{1}$ whose $(\\mathrm{i},\\mathrm{j})$ entry is the scalar $\\partial\\mathrm{loss}/\\partial{W_{\\mathrm{i,j}}^{\\mathrm{l}}}$ . In some sense, we\u2019re just doing a bunch of traditional scalar derivatives, and the matrix notation lets us write them all simultaneously and succinctly. In particular, for SGD, we need to find the derivative of the loss with respect to every scalar component of the weights because these are our model\u2019s parameters and therefore are the things we want to update in SGD. ",
+        "page_idx": 7,
+        "tags": [
+            "the_general_case"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Th antity we see in Eq. 6.4 is $A^{1-1}$ , which we recall has size $\\mathfrak{m}^{\\downarrow}\\times1$ (or equ -lently $\\mathfrak{n}^{1-1}\\times\\bar{1}$ \u00d71 since it rep ents tputs of the l\u22121 layer). Finally, we see \u2202loss $\\mathbf{\\Psi}^{\\partial\\mathbf{Z}^{\\intercal}}$ .Again, los be able to check that the dimensions all make sense in Eq. 6.4; in particular, you can check have that $\\partial\\mathrm{loss}/\\partial Z^{\\mathrm{l}}$ ar, and has size $Z^{1}$ $\\mathfrak{n}^{\\downarrow}\\times1$ \u00d7$\\mathfrak{n}^{\\downarrow}\\times1$ 1. The transpose then has size 1 \u00d71 vector. So by the conven $1\\times\\mathfrak{n}^{\\mathfrak{l}}$ \u00d7n Appendix . Now you should $\\mathrm{A},$ we that inner dimensions agree in the matrix multiplication and that, after the multiplication, we should be left with something that has the dimensions on the lefthand side. ",
+        "page_idx": 7,
+        "tags": [
+            "the_general_case"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Now let\u2019s look at Eq. 6.6. We\u2019re computing \u2202loss /$\\partial Z^{\\l\\l}$ so that we can use it in Eq. 6.4. The weights are familiar. The one part that remains is terms of the form $\\partial A^{\\iota}/\\partial Z^{\\iota}$ . Checking out Appendix see that this term should be a matrix of size $n^{1}\\times n^{1}$ since $A^{\\lfloor}$ and $Z^{\\bar{\\imath}}$ both have size $\\mathfrak{n}^{\\downarrow}\\times1$ \u00d71. The $(\\mathrm{i},\\mathrm{j})$ entry of this matrix is $\\partial A_{\\mathrm{j}}^{\\mathrm{l}}/\\partial Z_{\\mathrm{i}}^{\\mathrm{l}}$ . This scalar derivative is something that you can compute when you know your activation function. If you\u2019re not using a softmax activation function, $A_{\\mathrm{j}}^{\\mathrm{l}}$ typically is a function only of $Z_{\\mathrm{j}}^{\\mathrm{l}},$ , which means that $\\partial A_{\\mathrm{j}}^{\\mathrm{l}}/\\partial Z_{\\mathrm{i}}^{\\mathrm{l}}$ should equal 0 whenever $i\\neq{\\mathrm{j}}$ , and that $\\partial\\mathsf{A}_{\\mathrm{j}}^{\\mathrm{1}}/\\partial Z_{\\mathrm{j}}^{\\mathrm{1}}=(\\mathsf{f}^{\\mathrm{1}})^{\\prime}(Z_{\\mathrm{j}}^{\\mathrm{1}})$ .",
+        "page_idx": 7,
+        "tags": [
+            "the_general_case"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Study Question: Compute the dimensions of every term in Eqs. 6.5 and 6.6 using Appendix A. After you\u2019ve done that, check that all the matrix multiplications work; that is, check that the inner dimensions agree and that the lefthand side and righthand side of these equations have the same dimensions. ",
+        "page_idx": 7,
+        "tags": [
+            "the_general_case"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Study Question: If I use the identity activation function, what is $\\partial A_{\\mathrm{j}}^{\\mathrm{l}}/\\partial Z_{\\mathrm{j}}^{\\mathrm{l}}$ for any j?What is the full matrix $\\partial\\mathsf{A}^{\\mathsf{l}}/\\partial\\mathsf{Z}^{\\mathsf{l}}\\?$ ",
+        "page_idx": 7,
+        "tags": [
+            "the_general_case"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "You can use everything above without deriving it yourself. But if you want to find the gradients of loss with respect to $W_{0}^{\\tt l}$ (which we need for SGD!), then you\u2019ll want to know how to actually do these derivations. So next we\u2019ll work out the derivations. ",
+        "page_idx": 8,
+        "tags": [
+            "derivations_for_the_general_case"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "The key trick is to just break every equation down into its scalar meaning. For instance, the $(\\mathrm{i},\\mathrm{j})$ element of $\\partial\\mathrm{loss}/\\partial{W^{\\mathrm{l}}}$ is $\\partial\\mathrm{loss}/\\partial{W_{\\mathrm{i},\\mathrm{j}}^{\\mathrm{l}}}$ . If you think about it for a moment (and it might help to go back to the one-dimensional case), the loss is a function of the elements of $\\bar{Z}^{\\intercal}.$ , and the elements of $Z^{\\l^{\\l}}$ are a function of the $W_{\\mathrm{i,j}}^{\\mathrm{l}}$ . There are ${\\mathfrak{n}}^{!}$ elements of $Z^{1}$ , so we can use the chain rule to write ",
+        "page_idx": 8,
+        "tags": [
+            "derivations_for_the_general_case"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\frac{\\partial\\mathrm{loss}}{\\partial W_{\\mathrm{i,j}}^{1}}=\\sum_{\\mathrm{k=1}}^{\\mathrm{n^{1}}}\\frac{\\partial\\mathrm{loss}}{\\partial Z_{\\mathrm{k}}^{1}}\\frac{\\partial Z_{\\mathrm{k}}^{1}}{\\partial W_{\\mathrm{i,j}}^{1}}.\n$$",
+        "text_format": "latex",
+        "page_idx": 8,
+        "tags": [
+            "derivations_for_the_general_case"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "To figure this out, let\u2019s remember that $Z^{1}=(W^{1})^{\\top}\\mathsf{A}^{1-1}+W_{0}^{1}$ . We can write one element of the $Z^{1}$ vector, then, as $\\begin{array}{r}{Z_{\\mathtt{b}}^{\\mathtt{l}}=\\sum_{\\mathtt{a}=1}^{\\mathtt{m}^{\\mathtt{l}}}W_{\\mathtt{a},\\mathtt{b}}^{\\mathtt{l}}\\mathsf{A}_{\\mathtt{a}}^{\\mathtt{l}-1}+(W_{0}^{\\mathtt{l}})_{\\mathtt{b}}}\\end{array}$ P. It follows that $\\partial Z_{\\mathrm{k}}^{\\mathrm{l}}/\\partial W_{\\mathrm{i,j}}^{\\mathrm{l}}$ will be zero except when ${\\sf k}=\\dot{\\sf1}$ (check you agree!). So we can rewrite Eq. 6.7 as ",
+        "page_idx": 8,
+        "tags": [
+            "derivations_for_the_general_case"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\frac{\\partial\\mathrm{loss}}{\\partial W_{\\mathrm{i,j}}^{1}}=\\frac{\\partial\\mathrm{loss}}{\\partial Z_{\\mathrm{j}}^{1}}\\frac{\\partial Z_{\\mathrm{j}}^{1}}{\\partial W_{\\mathrm{i,j}}^{1}}=\\frac{\\partial\\mathrm{loss}}{\\partial Z_{\\mathrm{j}}^{1}}A_{\\mathrm{i}}^{1-1}.\n$$",
+        "text_format": "latex",
+        "page_idx": 8,
+        "tags": [
+            "derivations_for_the_general_case"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Finally, then, we match entries of the matrices on both sides of the equation above to recover Eq. 6.4. ",
+        "page_idx": 8,
+        "tags": [
+            "derivations_for_the_general_case"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Study Question: Check that Eq. 6.8 and Eq. 6.4 say the same thing. ",
+        "page_idx": 8,
+        "tags": [
+            "derivations_for_the_general_case"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Study Question: Convince yourself that $\\partial Z^{1}/\\partial\\mathsf{A}^{1-1}=W^{1}$ by comparing the entries of the matrices on both sides on the equality sign. ",
+        "page_idx": 8,
+        "tags": [
+            "derivations_for_the_general_case"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Study Question: Convince yourself that Eq. 6.5 is true. ",
+        "page_idx": 8,
+        "tags": [
+            "derivations_for_the_general_case"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Study Question: Apply the same reasoning to find the gradients of loss with respect to $W_{0}^{\\tt l}$ .",
+        "page_idx": 8,
+        "tags": [
+            "derivations_for_the_general_case"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "This general process of computing the gradients of the loss with respect to the weights is called error back-propagation . The idea is that we first do a forward pass to compute all the a and $z$ values at all the layers, and finally the actual loss. Then, we can work backward and compute the gradient of the loss with respect to the weights in each layer, starting at layer Land going back to layer 1. ",
+        "page_idx": 8,
+        "tags": [
+            "reflecting_on_backpropagation"
+        ]
+    },
+    {
+        "type": "image",
+        "img_path": "images/c6161b7754bbe378411a73bf2891c9cb6aad21869736cc788babda9ca3ad528b.jpg",
+        "img_caption": [],
+        "img_footnote": [],
+        "page_idx": 8,
+        "tags": [
+            "reflecting_on_backpropagation"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "If we view our neural network as a sequential composition of modules (in our work so far, it has been an alternation between a linear transformation with a weight matrix, and a component-wise application of a non-linear activation function), then we can define a simple API for a module that will let us compute the forward and backward passes, as ",
+        "page_idx": 8,
+        "tags": [
+            "reflecting_on_backpropagation"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Last Updated: 04/07/24 16:49:48 We could call this \u201cblame propagation\u201d. Think of loss as how mad we are about the prediction just made. Then \u2202loss /$\\partial A^{\\mathrm{~L~}}$ is how much we blame $A^{\\mathrm{L}}$ for the loss. The last module has to take in \u2202loss /\u2202A Land compute $\\partial{\\mathrm{loss}}/\\partial Z^{\\mathrm{L}}$ , which is how much we blame $Z^{\\mathrm{L}}$ for the loss. The next module (working backwards) takes in \u2202loss /$\\,^{\\prime}\\partial Z^{\\mathrm{L}}$ and computes \u2202loss /$\\partial\\mathrm{A}^{\\mathrm{L-1}}$ . So every module is accepting its blame for the loss, computing how much of it to allocate to each of its inputs, and passing the blame back to them. ",
+        "page_idx": 8,
+        "tags": [
+            "reflecting_on_backpropagation"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "",
+        "page_idx": 8,
+        "tags": [
+            "reflecting_on_backpropagation"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "well as do the necessary weight updates for gradient descent. Each module has to provide the following \u201cmethods.\u201d We are already using letters ${\\mathbf a},{\\mathbf x},{\\mathbf y},z$ with particular meanings, so here we will use uas the vector input to the module and $\\nu$ as the vector output: ",
+        "page_idx": 9,
+        "tags": [
+            "reflecting_on_backpropagation"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "\u2022 forward: $u\\rightarrow\\nu$   \n\u2022 backward: $\\mathrm{u},\\nu,\\partial\\mathrm{L}/\\partial\\nu\\rightarrow\\partial\\mathrm{L}/\\partial\\mathrm{u}$   \n\u2022 weight grad: $\\mathrm{u},\\partial\\mathrm{L}/\\partial\\nu\\to\\partial\\mathrm{L}/\\partial W$ only needed for modules that have weights W",
+        "page_idx": 9,
+        "tags": [
+            "reflecting_on_backpropagation"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "In homework we will ask you to implement these modules for neural network components, and then use them to construct a network and train it as described in the next section. ",
+        "page_idx": 9,
+        "tags": [
+            "reflecting_on_backpropagation"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Here we go! Here\u2019s how to do stochastic gradient descent training on a feed-forward neural network. After this pseudo-code, we motivate the choice of initialization in lines 2 and 3. The actual computation of the gradient values (e.g., $\\partial\\mathrm{loss}/\\partial\\mathrm{A}^{\\mathrm{L}}$ ) is not directly defined in this code, because we want to make the structure of the computation clear. ",
+        "page_idx": 9,
+        "tags": [
+            "training"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Study Question: What is \u2202Z l/\u2202W l?",
+        "page_idx": 9,
+        "tags": [
+            "training"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Study Question: Which terms in the code below depend on fL?",
+        "page_idx": 9,
+        "tags": [
+            "training"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "SGD-N EURA $\\mathrm{L-NET}(\\mathcal{D}_{\\mathfrak{n}},\\mathsf{T},\\mathsf{L},(\\mathfrak{m}^{1},\\ldots,\\mathfrak{m}^{\\mathsf{L}}),(\\mathsf{f}^{1},\\ldots,\\mathsf{f}^{\\mathrm{L}}),\\mathrm{Loss})$ ",
+        "page_idx": 9,
+        "tags": [
+            "training"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "1 for $\\l_{1}=1$ to L  \n2 $\\begin{array}{l}{W_{\\mathrm{ij}}^{\\mathrm{l}}\\sim\\mathrm{Gaussian}(0,1/\\mathfrak{m}^{1})}\\\\ {W_{\\mathrm{0j}}^{\\mathrm{l}}\\sim\\mathrm{Gaussian}(0,1)}\\end{array}$   \n3   \n4 for $\\mathrm{~t~}=1$ to T  \n5 $\\mathfrak{i}=$ random sample from $\\{1,\\ldots,{\\mathfrak{n}}\\}$   \n6 $\\mathsf{A}^{0}=\\mathsf{x}^{(\\mathrm{i})}$   \n7 // forward pass to compute the output $A^{\\mathrm{L}}$   \n8 for $\\l^{1}=\\l^{1}$ to L  \n9 $\\begin{array}{r}{\\begin{array}{r l}&{Z^{1}=W^{\\mathrm{\\scriptscriptstyle1^{\\mathrm{T}}}}\\,\\mathsf{A}^{1-1}+W_{0}^{\\mathrm{\\scriptscriptstyle1}}}\\\\ &{\\mathsf{A}^{1}=\\mathsf{f}^{1}(Z^{1})}\\\\ &{\\mathsf{x s}=\\mathrm{Loss}(\\mathsf{A}^{\\mathrm{\\scriptscriptstyleL}},\\mathsf{y}^{(\\mathrm{i})})}\\end{array}}\\end{array}$   \n10   \n11   \n12 for ${\\mathfrak{l}}={\\mathrm{~L~}}$ to 1:   \n13 // error back-propagation   \n14 \u2202loss /$\\mathtt{0A^{\\mathtt{l}}}=\\bar{\\mathbf{if}}\\,\\mathtt{l}<\\bar{\\mathbf{L}}$ then $\\partial Z^{1+1}/\\partial\\mathsf{A}^{1}\\cdot\\partial\\mathrm{loss}/\\partial Z^{1+1}$ else \u2202loss /\u2202A L  \n15 \u2202loss $/\\partial Z^{1}=\\partial\\mathsf{A}^{1}/\\partial Z^{1}\\cdot\\partial\\mathrm{loss}/\\partial\\mathsf{A}^{1}$   \n16 // compute gradient with respect to weights   \n17 $3\\mathrm{loss}/\\partial{W^{1}}={\\sf A}^{1-1}\\cdot\\left(3\\mathrm{loss}/\\partial{Z^{1}}\\right)^{\\sf T}$ \u0001  \n18 \u2202loss $\\partial W_{0}^{1}=\\partial\\mathrm{loss}/\\partial Z^{1}$   \n19 // stochastic gradient descent update   \n20 $\\begin{array}{r}{W^{1}=W^{1}-\\boldsymbol{\\eta}(\\mathbf{t})\\cdot\\partial\\mathrm{loss}/\\partial W^{1}}\\\\ {W_{0}^{1}=W_{0}^{1}-\\boldsymbol{\\eta}(\\mathbf{t})\\cdot\\partial\\mathrm{loss}/\\partial W_{0}^{1}}\\end{array}$   \n21 ",
+        "page_idx": 9,
+        "tags": [
+            "training"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Initializing $\\boldsymbol{W}$ is important; if you do it badly there is a good chance the neural network training won\u2019t work well. First, it is important to initialize the weights to random values. We want different parts of the network to tend to \u201caddress\u201d different aspects of the problem; if they all start at the same weights, the symmetry will often keep the values from moving in useful directions. Second, many of our activation functions have (near) ",
+        "page_idx": 9,
+        "tags": [
+            "training"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "zero slope when the pre-activation $z$ values have large magnitude, so we generally want to keep the initial weights small so we will be in a situation where the gradients are non-zero, so that gradient descent will have some useful signal about which way to go. ",
+        "page_idx": 10,
+        "tags": [
+            "training"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "One good general-purpose strategy is to choose each weight at random from a Gaussian (normal) distribution with mean 0 and standard deviation $(1/{\\mathfrak{m}})$ where mis the number of inputs to the unit. ",
+        "page_idx": 10,
+        "tags": [
+            "training"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Study Question: If the input xto this unit is a vector of 1\u2019s, what would the expected pre-activation $z$ value be with these initial weights? ",
+        "page_idx": 10,
+        "tags": [
+            "training"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "$\\begin{array}{r}{W_{\\mathrm{ij}}^{\\ l}\\ \\sim\\mathrm{Gaussian}\\left(0,\\frac{1}{\\ m^{1}}\\right).}\\end{array}$ We write this choice (where \u0001. It will often turn out (especially for fancier activations and loss $\\sim$ means \u201cis drawn randomly from the distribution\u201d) as functions) that computing $\\frac{\\partial\\mathrm{loss}}{\\partial Z^{\\mathrm{L}}}$ is easier than computing $\\frac{\\partial\\mathrm{loss}}{\\partial\\mathrm{A^{L}}}$ and $\\frac{\\partial\\mathsf{A}^{\\mathrm{L}}}{\\partial Z^{\\mathrm{L}}}$ . So, we may instead ask for an implementation of a loss function to provide a backward method that computes $\\partial\\mathrm{loss}/\\partial Z^{\\mathrm{L}}$ directly. ",
+        "page_idx": 10,
+        "tags": [
+            "training"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Because neural networks are just parametric functions, we can optimize loss with respect to the parameters using standard gradient-descent software, but we can take advantage of the structure of the loss function and the hypothesis class to improve optimization. As we have seen, the modular function-composition structure of a neural network hypothesis makes it easy to organize the computation of the gradient. As we have also seen earlier, the structure of the loss function as a sum over terms, one per training data point, allows us to consider stochastic gradient methods. In this section we\u2019ll consider some alternative strategies for organizing training, and also for making it easier to handle the step-size parameter. ",
+        "page_idx": 10,
+        "tags": [
+            "optimizing_neural_network_parameters"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Assume that we have an objective of the form ",
+        "page_idx": 10,
+        "tags": [
+            "batches"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\boldsymbol{\\mathrm{J}}(\\boldsymbol{\\mathsf{W}})=\\sum_{\\mathrm{i}=1}^{\\mathrm{n}}\\mathcal{L}(\\mathbf{h}(\\boldsymbol{\\mathsf{x}}^{(\\mathrm{i})};\\boldsymbol{\\mathsf{W}}),\\boldsymbol{\\mathsf{y}}^{(\\mathrm{i})})\\ \\mathrm{,}\n$$",
+        "text_format": "latex",
+        "page_idx": 10,
+        "tags": [
+            "batches"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "where $\\mathtt{h}$ is the function computed by a neural network, and Wstands for all the weight matrices and vectors in the network. ",
+        "page_idx": 10,
+        "tags": [
+            "batches"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Recall that, when we perform batch (or the vanilla) gradient descent, we use the update rule ",
+        "page_idx": 10,
+        "tags": [
+            "batches"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\nW_{\\mathrm{t}}=W_{\\mathrm{t-1}}-\\eta\\nabla_{W}\\mathrm{J}(W_{\\mathrm{t-1}})\\;\\;,\n$$",
+        "text_format": "latex",
+        "page_idx": 10,
+        "tags": [
+            "batches"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "which is equivalent to ",
+        "page_idx": 10,
+        "tags": [
+            "batches"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\nW_{\\mathrm{t}}=W_{\\mathrm{t-1}}-\\eta\\sum_{\\mathrm{i=1}}^{\\mathrm{n}}\\nabla_{\\mathsf{W}}\\mathcal{L}(\\mathsf{h}(\\mathsf{x}^{(\\mathrm{i})};\\mathsf{W}_{\\mathrm{t-1}}),\\mathsf{y}^{(\\mathrm{i})})\\;\\;.\n$$",
+        "text_format": "latex",
+        "page_idx": 10,
+        "tags": [
+            "batches"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "So, we sum up the gradient of loss at each training point, with respect to $\\boldsymbol{W}_{.}$ , and then take a step in the negative direction of the gradient. ",
+        "page_idx": 10,
+        "tags": [
+            "batches"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "In stochastic gradient descent, we repeatedly pick a point $(\\mathbf{x}^{(\\mathrm{i})},\\mathbf{y}^{(\\mathrm{i})})$ at random from the data set, and execute a weight update on that point alone: ",
+        "page_idx": 10,
+        "tags": [
+            "batches"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\nW_{\\mathrm{t}}=W_{\\mathrm{t-1}}-\\eta\\nabla_{W}\\mathcal{L}(\\mathsf{h}(\\mathsf{x}^{(\\mathrm{i})};W_{\\mathrm{t-1}}),\\mathsf{y}^{(\\mathrm{i})})\\ \\mathrm{~.~}\n$$",
+        "text_format": "latex",
+        "page_idx": 10,
+        "tags": [
+            "batches"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "As long as we pick points uniformly at random from the data set, and decrease $\\boldsymbol\\upeta$ at an appropriate rate, we are guaranteed, with high probability, to converge to at least a local optimum. ",
+        "page_idx": 11,
+        "tags": [
+            "batches"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "These two methods have offsetting virtues. The batch method takes steps in the exact gradient direction but requires a lot of computation before even a single step can be taken, especially if the data set is large. The stochastic method begins moving right away, and can sometimes make very good progress before looking at even a substantial fraction of the whole data set, but if there is a lot of variability in the data, it might require a very small \u03b7to effectively average over the individual steps moving in \u201ccompeting\u201d directions. ",
+        "page_idx": 11,
+        "tags": [
+            "batches"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "An effective strategy is to \u201caverage\u201d between batch and stochastic gradient descent by using mini-batches . For a mini-batch of size $\\mathsf{K},$ we select Kdistinct data points uniformly at random from the data set and do the update based just on their contributions to the gradient ",
+        "page_idx": 11,
+        "tags": [
+            "batches"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\nW_{\\mathrm{t}}=W_{\\mathrm{t-1}}-\\eta\\sum_{\\mathrm{i=1}}^{\\mathrm{K}}\\nabla_{\\mathsf{W}}\\mathcal{L}(\\mathsf{h}(\\mathsf{x}^{(\\mathrm{i})};\\mathsf{W}_{\\mathrm{t-1}}),\\mathsf{y}^{(\\mathrm{i})})\\;\\;.\n$$",
+        "text_format": "latex",
+        "page_idx": 11,
+        "tags": [
+            "batches"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Most neural network software packages are set up to do mini-batches. ",
+        "page_idx": 11,
+        "tags": [
+            "batches"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Study Question: For what value of Kis mini-batch gradient descent equivalent to stochastic gradient descent? To batch gradient descent? ",
+        "page_idx": 11,
+        "tags": [
+            "batches"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Picking Kunique data points at random from a large data-set is potentially computationally difficult. An alternative strategy, if you have an efficient procedure for randomly shuffling the data set (or randomly shuffling a list of indices into the data set) is to operate in a loop, roughly as follows: ",
+        "page_idx": 11,
+        "tags": [
+            "batches"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "MINI -B ATCH -SGD(NN, data, K) ",
+        "page_idx": 11,
+        "tags": [
+            "batches"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "1 ${\\mathfrak{n}}=$ length(data)   \n2 while not done:   \n3 RANDOM -S HUFFLE (data)   \n4 5 for $\\dot{\\iota}=1$ BATCH to -G $\\lceil{\\mathsf n}/{\\mathsf K}\\rceil$ RADIENT -U PDATE (NN, data [( i \u22121 )K:iK ])",
+        "page_idx": 11,
+        "tags": [
+            "batches"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "See note on the ceiling 1 function, for the case when $\\mathfrak{n}/\\mathfrak{K}$ is not an integer. ",
+        "page_idx": 11,
+        "tags": [
+            "batches"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Picking a value for $\\boldsymbol\\upeta$ is difficult and time-consuming. If it\u2019s too small, then convergence is slow and if it\u2019s too large, then we risk divergence or slow convergence due to oscillation. This problem is even more pronounced in stochastic or mini-batch mode, because we know we need to decrease the step size for the formal guarantees to hold. ",
+        "page_idx": 11,
+        "tags": [
+            "adaptive_step-size"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "It\u2019s also true that, within a single neural network, we may well want to have different step sizes. As our networks become deep (with increasing numbers of layers) we can find that magnitude of the gradient of the loss with respect the weights in the last layer, \u2202loss /$\\mathrm{\\partial}^{\\prime}W_{\\mathrm{L}}$ , may be substantially different from the gradient of the loss with respect to the weights in the first layer \u2202loss /$\\partial{\\sf W}_{1}$ . If you look carefully at Eq. 6.6, you can see that the output gradient is multiplied by all the weight matrices of the network and is \u201cfed back\u201d through all the derivatives of all the activation functions. This can lead to a problem of exploding or vanishing gradients, in which the back-propagated gradient is much too big or small to be used in an update rule with the same step size. ",
+        "page_idx": 11,
+        "tags": [
+            "adaptive_step-size"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "So, we can consider having an independent step-size parameter for each weight , and updating it based on a local view of how the gradient updates have been going. Some common strategies for this include momentum (\u201caveraging\u201d recent gradient updates), Adadelta (take larger steps in parts of the space where J(W)is nearly flat), and Adam (which combines these two previous ideas). Details of these approaches are described in Appendix B.0.1. ",
+        "page_idx": 12,
+        "tags": [
+            "adaptive_step-size"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "So far, we have only considered optimizing loss on the training data as our objective for neural network training. But, as we have discussed before, there is a risk of overfitting if we do this. The pragmatic fact is that, in current deep neural networks, which tend to be very large and to be trained with a large amount of data, overfitting is not a huge problem. This runs counter to our current theoretical understanding and the study of this question is a hot area of research. Nonetheless, there are several strategies for regularizing a neural network, and they can sometimes be important. ",
+        "page_idx": 12,
+        "tags": [
+            "regularization"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "One group of strategies can, interestingly, be shown to have similar effects to each other: early stopping, weight decay, and adding noise to the training data. ",
+        "page_idx": 12,
+        "tags": [
+            "methods_related_to_ridge_regression"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Early stopping is the easiest to implement and is in fairly common use. The idea is to train on your training set, but at every epoch (a pass through the whole training set, or possibly more frequently), evaluate the loss of the current Won a validation set . It will generally be the case that the loss on the training set goes down fairly consistently with each iteration, the loss on the validation set will initially decrease, but then begin to increase again. Once you see that the validation loss is systematically increasing, you can stop training and return the weights that had the lowest validation error. ",
+        "page_idx": 12,
+        "tags": [
+            "methods_related_to_ridge_regression"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Another common strategy is to simply penalize the norm of all the weights, as we did in ridge regression. This method is known as weight decay , because when we take the gradient of the objective ",
+        "page_idx": 12,
+        "tags": [
+            "methods_related_to_ridge_regression"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Result is due to Bishop, described in his textbook and here doi.org/10.1162/ neco.1995.7.1.108 .",
+        "page_idx": 12,
+        "tags": [
+            "methods_related_to_ridge_regression"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\mathrm{J}(W)=\\sum_{\\mathrm{i}=1}^{\\mathrm{n}}\\mathcal{L}(\\mathrm{NN}(x^{(\\mathrm{i})}),{y^{(\\mathrm{i})}};\\mathrm{W})+\\lambda\\|W\\|^{2}\n$$",
+        "text_format": "latex",
+        "page_idx": 12,
+        "tags": [
+            "methods_related_to_ridge_regression"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "we end up with an update of the form ",
+        "page_idx": 12,
+        "tags": [
+            "methods_related_to_ridge_regression"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\begin{array}{r l}&{W_{\\mathrm{t}}=W_{\\mathrm{t}-1}-\\eta\\left(\\left(\\nabla_{\\boldsymbol{W}}\\mathcal{L}(\\mathbf{N}\\mathbf{N}(\\boldsymbol{x}^{(\\mathrm{i})}),\\boldsymbol{y}^{(\\mathrm{i})};\\boldsymbol{W}_{\\mathrm{t}-1})\\right)+2\\lambda W_{\\mathrm{t}-1}\\right)}\\\\ &{\\qquad=W_{\\mathrm{t}-1}(1-2\\lambda\\eta)-\\eta\\left(\\nabla_{\\boldsymbol{W}}\\mathcal{L}(\\mathbf{N}\\mathbf{N}(\\boldsymbol{x}^{(\\mathrm{i})}),\\boldsymbol{y}^{(\\mathrm{i})};\\boldsymbol{W}_{\\mathrm{t}-1})\\right)\\enspace.}\\end{array}\n$$",
+        "text_format": "latex",
+        "page_idx": 12,
+        "tags": [
+            "methods_related_to_ridge_regression"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "This rule has the form of first $^{\\prime\\prime}\\mathrm{decaying^{\\prime\\prime}\\:}W_{\\mathrm{t-1}}$ by a factor of $(1-2\\lambda\\eta)$ and then taking a gradient step. ",
+        "page_idx": 12,
+        "tags": [
+            "methods_related_to_ridge_regression"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Finally, the same effect can be achieved by perturbing the $x^{(\\mathrm{i})}$ values of the training data by adding a small amount of zero-mean normally distributed noise before each gradient computation. It makes intuitive sense that it would be more difficult for the network to overfit to particular training data if they are changed slightly on each training step. ",
+        "page_idx": 12,
+        "tags": [
+            "methods_related_to_ridge_regression"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Dropout is a regularization method that was designed to work with deep neural networks. The idea behind it is, rather than perturbing the data every time we train, we\u2019ll perturb the network! We\u2019ll do this by randomly, on each training step, selecting a set of units in each layer and prohibiting them from participating. Thus, all of the units will have to take a kind of \u201ccollective\u201d responsibility for getting the answer right, and will not be able to rely on any small subset of the weights to do all the necessary computation. This tends also to make the network more robust to data perturbations. ",
+        "page_idx": 12,
+        "tags": [
+            "dropout"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "",
+        "page_idx": 13,
+        "tags": [
+            "dropout"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "During the training phase, for each training example, for each unit, randomly with probability ptemporarily set $\\mathfrak{a}_{\\mathrm{j}}^{\\ell}\\,=\\,0$ 0. There will be no contribution to the output and no gradient update for the associated unit. ",
+        "page_idx": 13,
+        "tags": [
+            "dropout"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Study Question: Be sure you understand why, when using SGD , setting an activation value to 0 will cause that unit\u2019s weights not to be updated on that iteration. ",
+        "page_idx": 13,
+        "tags": [
+            "dropout"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "When we are done training and want to use the network to make predictions, we multiply all weights by $\\mathfrak{p}$ to achieve the same average activation levels. ",
+        "page_idx": 13,
+        "tags": [
+            "dropout"
+        ]
+    },
+    {
+        "type": "equation",
+        "text": "$$\n\\mathbf{a}^{\\ell}=\\mathbf{f}(z^{\\ell})*\\mathbf{d}^{\\ell}\n$$",
+        "text_format": "latex",
+        "page_idx": 13,
+        "tags": [
+            "dropout"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "where $^*$ denotes component-wise product and ${\\bf d}^{\\ell}$ is a v tor of $0^{\\prime}\\mathrm{s}$ and 1\u2019s drawn randomly with probability p. The backwards pass depends on a ${\\bf a}^{\\ell}$ , so we do not need to make any further changes to the algorithm. ",
+        "page_idx": 13,
+        "tags": [
+            "dropout"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "It is common to set $\\mathfrak{p}$ to 0.5, but this is something one might experiment with to get good results on your problem and data. ",
+        "page_idx": 13,
+        "tags": [
+            "dropout"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Another strategy that seems to help with regularization and robustness in training is batch normalization . It was originally developed to address a problem of covariate shift : that is, if you consider the second layer of a two-layer neural network, the distribution of its input values is changing over time as the first layer\u2019s weights change. Learning when the input distribution is changing is extra difficult: you have to change your weights to improve your predictions, but also just to compensate for a change in your inputs (imagine, for instance, that the magnitude of the inputs to your layer is increasing over time\u2014then your weights will have to decrease, just to keep your predictions the same). ",
+        "page_idx": 13,
+        "tags": [
+            "batch_normalization"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "So, when training with mini-batches, the idea is to standardize the input values for each mini-batch, just in the way that we did it in Section 5.3.3 of Chapter 5, subtracting off the mean and dividing by the standard deviation of each input dimension. This means that the scale of the inputs to each layer remains the same, no matter how the weights in previous layers change. However, this somewhat complicates matters, because the computation of the weight updates will need to take into account that we are performing this transformation. In the modular view, batch normalization can be seen as a module that is applied to $z^{1}.$ , interposed after the product with $W^{\\lfloor}$ and before input to fl.",
+        "page_idx": 13,
+        "tags": [
+            "batch_normalization"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "Although batch-norm was originally justified based on the problem of covariate shift, it\u2019s not clear that that is actually why it seems to improve performance. Batch normalization can also end up having a regularizing effect for similar reasons that adding noise and dropout do: each mini-batch of data ends up being mildly perturbed, which prevents the network from exploiting very particular values of the data points. For those interested, the equations for batch normalization, including a derivation of the forward pass and backward pass, are described in Appendix B.0.2. ",
+        "page_idx": 13,
+        "tags": [
+            "batch_normalization"
+        ]
+    },
+    {
+        "type": "text",
+        "text": "We follow here the suggestion from the original paper of applying batch normalization before the activation function. Since then it has been shown that, in some cases, applying it after works a bit better. But there aren\u2019t any definite findings on which works better and when. ",
+        "page_idx": 13,
+        "tags": [
+            "batch_normalization"
+        ]
+    }
+]
