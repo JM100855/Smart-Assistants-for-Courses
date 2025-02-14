@@ -1,0 +1,370 @@
+[
+  {
+    "question": "What are the key platforms and their purposes for the ESE 577: DLAS course?",
+    "answer": "Brightspace is used for posting assignments, slides, and grades. Gradescope is for submitting homeworks, and Piazza facilitates all course communication."
+  },
+  {
+    "question": "Describe the course pedagogy and assessment methods for ESE 577: DLAS.",
+    "answer": "The course includes mandatory Thursday lectures, weekly recitations with whiteboard exercises and Python coding, 10-minute weekly quizzes after recitation, and homework assignments released on Thursdays and due Wednesdays at 11:59 pm."
+  },
+  {
+    "question": "What is the grading breakdown and late submission policy for ESE 577: DLAS?",
+    "answer": "The grading is quizzes (10%), homework (20%), project (20%), midterm (20%), and final (30%).  There's a 20% penalty per day for late submissions. Students have 3 \"free\" late days, and justified extensions require documentation. Collaboration is permitted, but all submitted work must be understood and completed individually."
+  },
+  {
+    "question": "How can students seek help in ESE 577: DLAS?",
+    "answer": "Help is available through weekly office hours on Mondays and Wednesdays, Piazza for online Q&A, and during exam review sessions."
+  },
+  {
+    "question": "What is the recommended background for ESE 577: DLAS, and what are the course expectations?",
+    "answer": "While there are no prerequisites, prior exposure to Python programming, linear algebra, and basic probability is helpful. The course is demanding and based on MIT 6.390, requiring significant effort from students. In return, clear explanations and support will be provided by the instructor."
+  },
+  {
+    "question": "What is the high-level definition of machine learning (ML) and its purpose?",
+    "answer": "Machine learning involves deriving a computational model (hypothesis) from encoded examples to describe relationships within them.  This model is then used to characterize new examples and make predictions or decisions."
+  },
+  {
+    "question": "What are the main categories of machine learning?",
+    "answer": "Machine learning can be broadly categorized into supervised, unsupervised, and reinforcement learning. More specific categories include active learning, semi-supervised, selective, contrastive, few-shot, and inverse reinforcement learning."
+  },
+  {
+    "question": "Explain supervised learning with examples.",
+    "answer": "Supervised learning uses labeled data to train a model that predicts labels for new, unseen inputs. Examples include image classification (labeling images as \"cat\" or \"dog\"), text translation (translating from one language to another), and regressing home values (predicting house prices based on features)."
+  },
+  {
+    "question": "What is unsupervised learning and what are some of its applications?",
+    "answer": "Unsupervised learning involves finding patterns in unlabeled data. Examples include learning dependencies/causal structures, dimensionality reduction, semi-supervised learning (where some data has labels and some doesn't), and clustering."
+  },
+  {
+    "question": "Describe self-supervised learning and provide examples.",
+    "answer": "Self-supervised learning is a type of unsupervised learning where labels are automatically extracted from the input data. Examples include denoising images (label is the clean image) and predicting the next word in a sequence (label is the next word)."
+  },
+  {
+    "question": "What is reinforcement learning and how does it work?",
+    "answer": "Reinforcement learning involves an agent learning to interact with an environment to maximize rewards.  The agent takes actions in a given state, receives a reward, and observes the next state, learning a policy to guide its actions."
+  },
+  {
+    "question": "What is the core difference between machine learning (ML) and deep learning (DL)?",
+    "answer": "While both are subfields of Artificial Intelligence, ML learns to transform data into representations closer to predictions, whereas DL learns successive layers of transformations.  \"Deep\" refers to the multiple layers of transformation, not necessarily deep understanding."
+  },
+  {
+    "question": "What is the initial focus of ESE 577 in relation to machine learning?",
+    "answer": "The course initially focuses on supervised learning, specifically regression, before moving onto deep learning.  This establishes foundational understanding of machine learning concepts, evaluation methods, and basic building blocks."
+  },
+  {
+    "question": "In the context of machine learning, what do we \"have\" and \"want\"?",
+    "answer": "We \"have\" training data, consisting of feature vectors and corresponding labels. We \"want\" a \"good\" way to label new, unseen feature vectors, which is achieved by learning a hypothesis from a class of possible hypotheses."
+  },
+  {
+    "question": "What is the concern of overfitting vs. generalization in machine learning?",
+    "answer": "Overfitting occurs when a model is too specialized to the training data and performs poorly on new data.  Underfitting occurs when the model doesn't capture the input-output relationship well.  The goal is to achieve good generalization, where the model performs well on unseen data."
+  },
+  {
+    "question": "What is the hypothesis class in linear regression?",
+    "answer": "In linear regression, the hypothesis class is the set of all linear functions, where the output is a linear combination of the input features and a constant term (offset)."
+  },
+  {
+    "question": "How is the \"goodness\" of a regression hypothesis evaluated?",
+    "answer": "The goodness of a hypothesis is evaluated by how well it predicts on future data.  This is typically measured using a loss function (e.g., squared loss) that quantifies the error between predicted and actual values. The training error and validation/test error are calculated using the loss function."
+  },
+  {
+    "question": "What is the basic idea behind the random search algorithm for linear regression?",
+    "answer": "Random search involves repeatedly generating random hypotheses and evaluating their training error. The hypothesis with the lowest error is selected. This approach is simple but can be computationally expensive, especially for high-dimensional data."
+  },
+  {
+    "question": "What is the analytical approach to solving linear regression with squared loss?",
+    "answer": "This approach involves minimizing the training error directly by finding the hypothesis parameters that make the gradient of the error function zero.  This leads to a closed-form solution, but it requires the matrix X^T X to be invertible."
+  },
+  {
+    "question": "What is the matrix X in linear regression and how is it used to calculate the optimal parameters?",
+    "answer": "X is a matrix where each row represents a data point and each column represents a feature. The optimal parameters θ* are calculated by the formula θ* = (X^T X)^-1 X^T Y, where Y is the vector of labels."
+  },
+  {
+    "question": "What issue can arise when calculating the analytical solution for linear regression?",
+    "answer": "The matrix X^T X may not be invertible, which occurs when the features are linearly dependent or when the number of features exceeds the number of data points. This means there may not be a unique solution to the minimization problem."
+  },
+  {
+    "question": "What is regularization and what problem does it address in linear regression?",
+    "answer": "Regularization addresses overfitting by adding a penalty term to the loss function, which encourages the model to have smaller parameter values. This leads to simpler models that generalize better."
+  },
+  {
+    "question": "What is ridge regression and how does it implement regularization?",
+    "answer": "Ridge regression is a type of linear regression that uses a squared penalty term for regularization. This penalty is proportional to the sum of the squared magnitudes of the model parameters, controlled by a hyperparameter λ."
+  },
+  {
+    "question": "What is the role of the hyperparameter λ in ridge regression?",
+    "answer": "λ controls the strength of the regularization. Larger values of λ lead to stronger regularization, resulting in simpler models with smaller parameter values.  λ is a hyperparameter that needs to be tuned."
+  },
+  {
+    "question": "What is the purpose of cross-validation in machine learning?",
+    "answer": "Cross-validation is used to estimate the performance of a learning algorithm on unseen data. It helps choose hyperparameters and evaluate the generalization ability of the model without using the test data."
+  },
+  {
+    "question": "Why is it incorrect to use the test data to choose hyperparameters?",
+    "answer": "Using test data to select hyperparameters can lead to overfitting to the test set, resulting in an overly optimistic estimate of the model's performance on truly unseen data.  This defeats the purpose of having a separate test set."
+  },
+  {
+    "question": "Explain the process of k-fold cross-validation.",
+    "answer": "The training data is divided into k equal-sized folds. The model is trained k times, each time using k-1 folds for training and the remaining fold for validation. The average performance across the k folds is used as an estimate of the model's generalization error."
+  },
+  {
+    "question": "What are some important considerations when using cross-validation?",
+    "answer": "It's generally good to shuffle the data before creating the folds.  Cross-validation evaluates the learning algorithm (including hyperparameter choices), not a specific hypothesis.  It allows for efficient use of data and helps assess the model's performance on unseen data."
+  },
+  {
+    "question": "Why is gradient descent (GD) important in machine learning?",
+    "answer": "GD offers a general and efficient way to find optimal solutions for machine learning problems, especially when analytical solutions are unavailable or computationally expensive."
+  },
+  {
+    "question": "What are the key components of the optimization primer discussed in the context of gradient descent?",
+    "answer": "The optimization primer covers gradients, optimality conditions, and convexity."
+  },
+  {
+    "question": "What is the definition of a gradient?",
+    "answer": "The gradient of a vector function, where 𝑥 is a vector and 𝑦 is a scalar, ∇𝑥𝑦 is a vector representing the direction and rate of greatest increase of the function at a given point."
+  },
+  {
+    "question": "What are the five cases where the gradient is zero?",
+    "answer": "The five cases are: Local minimum, Local Maximum, Saddle point, Flat region, and inflection point."
+  },
+  {
+    "question": "What is the definition of a convex function?",
+    "answer": "A function 𝑓 on ℝ𝑚 is convex if any line segment connecting two points on the graph of 𝑓 lies above or on the graph. For convex functions, all local minima are also global minima."
+  },
+  {
+    "question": "Provide an example of a convex and a non-convex function.",
+    "answer": "A parabola (e.g., y = x^2) is a convex function. A sine wave is a non-convex function."
+  },
+  {
+    "question": "What are the key takeaways regarding convex functions in the context of this course?",
+    "answer": "Understanding the definition, identifying convexity (visually in 1D or 2D), understanding how gradient descent behaves differently on convex vs. non-convex functions, and knowing that common loss functions like OLS, ridge regression, and cross-entropy are convex."
+  },
+  {
+    "question": "What are the inputs and steps of the Gradient Descent algorithm?",
+    "answer": "Inputs: Initial parameters (Θinit), learning rate (𝜂), function (𝑓), gradient of the function (∇Θ𝑓), and convergence threshold (𝜖). Steps: Initialize parameters and iteration counter, repeatedly update parameters by moving in the opposite direction of the gradient, and stop when the change in function value is less than 𝜖."
+  },
+  {
+    "question": "What are the hyperparameters in gradient descent?",
+    "answer": "The hyperparameters are the initial parameters (Θinit), learning rate (𝜂), and convergence threshold (𝜖)."
+  },
+  {
+    "question": "Besides the difference in function values, what are other stopping criteria for gradient descent?",
+    "answer": "Maximum number of iterations (T), small change in parameters between iterations (||Θ𝑡 - Θ𝑡-1|| < 𝜖), and small gradient magnitude (||∇Θ𝑓(Θ𝑡)|| < 𝜖)."
+  },
+  {
+    "question": "What are the assumptions and conclusion of the gradient descent performance theorem?",
+    "answer": "Assumptions: The function 𝑓 is sufficiently smooth and convex, has at least one global minimum, and the learning rate 𝜂 is sufficiently small. Conclusion: If run long enough, gradient descent will return a value within 𝜖 of a global minimum."
+  },
+  {
+    "question": "What are the consequences of violating the assumptions of the gradient descent performance theorem?",
+    "answer": "Violating smoothness and convexity can lead to getting stuck at saddle points or local minima. Not having a global minimum prevents running GD.  A large learning rate leads to overshooting and oscillations, preventing convergence. A small learning rate can cause slow convergence, hindering reaching a minimum."
+  },
+  {
+    "question": "What is the typical form of a machine learning objective function, and what is its gradient?",
+    "answer": "ML objectives are typically finite sums: 𝑓(Θ) = (1/n) * Σᵢ𝑓ᵢ(Θ). The gradient is the sum of individual gradients: ∇𝑓(Θ) = (1/n) * Σᵢ∇𝑓ᵢ(Θ)."
+  },
+  {
+    "question": "Why is the finite sum nature of ML objective functions important?",
+    "answer": "It simplifies code implementation, allows for parallelization of computations, and enables stochastic gradient calculations. These factors have been crucial for the advancement of deep learning."
+  },
+  {
+    "question": "What is the difference between gradient descent and stochastic gradient descent (SGD)?",
+    "answer": "Gradient descent updates parameters using the gradient of the entire dataset. SGD updates parameters using the gradient computed from a single, randomly selected data point."
+  },
+  {
+    "question": "What are the properties and assumptions of the stochastic gradient descent (SGD) performance theorem?",
+    "answer": "SGD exhibits more random behavior and has stricter assumptions than GD. The assumptions include sufficient niceness and convexity of the function with a unique minimum, and a learning rate schedule that satisfies Σ𝜂𝑡² < ∞ and Σ𝜂𝑡 = ∞ (e.g., 𝜂𝑡 = α/(τ₀ + 𝑡)^κ, with κ ∈ (0.5, 1]). The conclusion is that, given enough iterations, SGD converges to the global minimum."
+  },
+  {
+    "question": "What are the fundamental components of a simple linear binary classification setup?",
+    "answer": "In a linear binary classification setup, the labels are binary (e.g., positive/negative, dog/cat).  Given data points with features x1, x2,... xd, a linear combination z = θ1x1 + θ2x2 + ... + θdxd + θ0 is calculated. If z > 0, the prediction is the positive class; otherwise, it's the negative class.  Key components to understand are the linear separator, normal vector, and linear separability."
+  },
+  {
+    "question": "What are the key takeaways from the linear separator demo?",
+    "answer": "With two features, the linear combination forms a plane, similar to regression. Predictions are based on whether the z-value of this plane is > 0 for a given x, y. This is equivalent to intersecting the plane with z=0, creating a line. This line is the linear separator.  Points on one side are classified as positive, and the other side as negative. The normal vector, perpendicular to the separator, points towards the positive side."
+  },
+  {
+    "question": "What are the characteristics of the 0-1 loss function?",
+    "answer": "The 0-1 loss is intuitive and easy to evaluate but very difficult to optimize because it's NP-hard. It's \"flat\" (zero gradient) almost everywhere, with discontinuous \"jumps,\" making gradient-based optimization challenging."
+  },
+  {
+    "question": "What are the key components of linear logistic regression?",
+    "answer": "Linear logistic regression, despite its name, is a classification method. It addresses the optimization issues of the 0-1 loss. Key components include the sigmoid function, cross-entropy (negative log-likelihood) loss, optimization via gradient descent, and the continued importance of regularization and cross-validation."
+  },
+  {
+    "question": "How does linear logistic regression differ from vanilla linear classification?",
+    "answer": "Both calculate a linear combination, z.  Vanilla linear classification predicts the positive class if z > 0. Logistic regression \"squashes\" z using the sigmoid function and predicts the positive class if the sigmoid output is > 0.5."
+  },
+  {
+    "question": "What are some important properties of the sigmoid function?",
+    "answer": "The sigmoid function's output is always between 0 and 1 (exclusive). It offers a probabilistic interpretation, has an elegant gradient, and can be horizontally flipped, squeezed, expanded, or shifted by adjusting its parameters."
+  },
+  {
+    "question": "How is the prediction made in logistic regression with one or two features?",
+    "answer": "Given parameters and features, the linear combination z is calculated.  This z is then passed through the sigmoid function.  If the sigmoid output (g) is greater than 0.5, predict the positive class; otherwise, predict the negative."
+  },
+  {
+    "question": "How does the learning process work for a logistic regression classifier, and what is the negative log-likelihood loss?",
+    "answer": "The learning process aims to maximize the probability (likelihood) of observing the correct labels in the training data. For a given data point with label y=1, we want the predicted probability g to be high, and for y=0, we want 1-g to be high. The negative log-likelihood loss is derived from this likelihood and is used to measure the error between predictions and actual labels.  Minimizing this loss improves the classifier's performance."
+  },
+  {
+    "question": "What are the characteristics of the cross-entropy loss?",
+    "answer": "The cross-entropy loss (equivalent to negative log-likelihood) is convex and differentiable, with elegant gradients. However, it lacks a closed-form solution. Gradient descent can be used for optimization, but overfitting can occur if the training data is linearly separable."
+  },
+  {
+    "question": "How is regularization applied to logistic regression, and why is it important?",
+    "answer": "Regularization in logistic regression involves adding a penalty term (scaled by λ) to the loss function, based on the magnitude of the parameters (excluding θ0). It penalizes overly confident predictions and helps prevent overfitting, particularly when the training data is linearly separable."
+  },
+  {
+    "question": "How are class labels represented in multi-class classification?",
+    "answer": "In multi-class classification with K classes, labels are conveniently represented as K-dimensional one-hot vectors.  The vector has a 1 in the position corresponding to the correct class and 0s elsewhere."
+  },
+  {
+    "question": "How does the softmax function generalize the sigmoid function for multi-class classification?",
+    "answer": "The sigmoid function is used for binary classification, outputting a scalar between 0 and 1.  Softmax generalizes this to K classes. It outputs a K-dimensional vector where each entry is between 0 and 1, and the entries sum to 1.  This vector represents the predicted probability distribution over the classes."
+  },
+  {
+    "question": "How is the negative log-likelihood (NLL) loss generalized for multi-class classification?",
+    "answer": "In multi-class classification, the NLL loss (cross-entropy) calculates a scalar loss for each data point based on the predicted probability distribution (softmax output) and the true one-hot label vector. Minimizing this loss encourages the model to assign higher probabilities to the correct classes across all training examples."
+  },
+  {
+    "question": "What is the intuition behind the cross-entropy loss in multi-class classification?",
+    "answer": "Cross-entropy measures the dissimilarity between the predicted probability distribution and the true distribution (one-hot label).  It penalizes the model more when it assigns low probabilities to the correct class and rewards it for confident correct predictions."
+  },
+  {
+    "question": "What are the key logistical components of the ESE 577: DLAS course?",
+    "answer": "The course utilizes Brightspace for assignments, slides, and grades, Gradescope for homework submissions, and Piazza for communication."
+  },
+  {
+    "question": "How is the ESE 577: DLAS course structured in terms of teaching methods?",
+    "answer": "The course includes mandatory lectures, recitations with whiteboard exercises and Python coding, weekly quizzes based on lecture and recitation material, and homework assignments."
+  },
+  {
+    "question": "What is the grading breakdown and policy for ESE 577: DLAS, including late submissions and collaboration?",
+    "answer": "The grading is quizzes (10%), homework (20%), project (20%), midterm (20%), and final (30%). Late submissions have a 20% penalty per day. Three \"free\" late days are provided. Documented extensions can be granted for valid reasons. Collaboration is permitted, but all submitted work must be understood and completed individually, with coding and derivations done independently."
+  },
+  {
+    "question": "What are the available resources for getting help in ESE 577: DLAS?",
+    "answer": "Help can be obtained through weekly office hours, Piazza forums for Q&A, and information about exams (midterm and final) is provided on the course website."
+  },
+  {
+    "question": "What prior knowledge is helpful for ESE 577: DLAS, and what are the course expectations?",
+    "answer": "While there are no formal prerequisites, prior exposure to Python programming, linear algebra, and basic probability is beneficial. The course is demanding and based on MIT 6.390. Significant effort is expected from students, and clear explanations and availability are expected from the instructor."
+  },
+  {
+    "question": "What is the central aim of machine learning?",
+    "answer": "Machine learning aims to derive computational models (hypotheses) from encoded examples to describe relationships and make predictions on new examples from the same population."
+  },
+  {
+    "question": "What are the main categories of machine learning?",
+    "answer": "Machine learning is broadly categorized into supervised, unsupervised, and reinforcement learning, with further refinements such as active, semi-supervised, selective, contrastive, few-shot, and inverse reinforcement learning."
+  },
+  {
+    "question": "What is supervised learning and what are some examples?",
+    "answer": "Supervised learning involves training a model on input-label pairs to predict labels for unseen inputs. Examples include image classification, text translation, and regressing home values."
+  },
+  {
+    "question": "What is unsupervised learning and what are some examples?",
+    "answer": "Unsupervised learning uses unlabeled data to train a model to extract patterns. Examples include learning dependencies/causal structures, dimensionality reduction, clustering, and semi-supervised learning (where some data has labels)."
+  },
+  {
+    "question": "What is self-supervised learning and how does it work?",
+    "answer": "Self-supervised learning is a type of unsupervised learning that automatically extracts labels from the input data and then uses supervised learning techniques for training. Examples include denoising images and predicting the next word in a sequence."
+  },
+  {
+    "question": "What is reinforcement learning and how does it differ from other types of machine learning?",
+    "answer": "Reinforcement learning involves an agent learning to interact with an environment by taking actions, receiving rewards, and observing the next state. The goal is to learn a policy that maximizes reward. It differs from supervised and unsupervised learning by focusing on sequential decision-making in an environment."
+  },
+  {
+    "question": "What is the definition of machine learning (ML), why study it, and what are the goals of ML?",
+    "answer": "ML is a set of methods for making predictions and decisions from data. It's studied for application, understanding, evaluation, and creation of new methods.  Given data and computational resources, the goal is to make accurate predictions on new data."
+  },
+  {
+    "question": "How does deep learning (DL) relate to machine learning (ML) and artificial intelligence (AI)?",
+    "answer": "DL is a subfield of ML, which is itself a subfield of AI. ML transforms data into representations closer to predictions. DL learns successive layers of transformations.  \"Deep\" refers to the many layers, not deep understanding."
+  },
+  {
+    "question": "What approach will be taken in the course to introduce deep learning?",
+    "answer": "The course will first establish a foundation in ML principles, evaluation methods, and building blocks before delving into deep learning. This groundwork will prepare students for the complexities of DL."
+  },
+  {
+    "question": "What kind of data is used in the initial focus on supervised learning (regression)?",
+    "answer": "The initial focus involves training data consisting of *n* data points, each with a feature vector (x<sup>(i)</sup>) and a corresponding label (y<sup>(i)</sup>)."
+  },
+  {
+    "question": "What is the goal of learning in machine learning, and how is it approached in terms of hypotheses?",
+    "answer": "The goal is to accurately label new feature vectors. This is done by learning a hypothesis from a class of possible hypotheses, which maps input feature vectors to output labels. The expressiveness of the hypothesis class influences how well the model generalizes."
+  },
+  {
+    "question": "What are overfitting and underfitting, and why are they important considerations in machine learning?",
+    "answer": "Overfitting occurs when the model is too specialized to the training data, performing poorly on new data. Underfitting happens when the model fails to capture the input-output relationship.  The goal is to achieve good generalization to future data, avoiding both extremes."
+  },
+  {
+    "question": "What form do hypotheses take in linear regression?",
+    "answer": "In linear regression, hypotheses take the form of a linear combination of input features: h(x) = Θ<sub>0</sub> + Θ<sub>1</sub>x<sub>1</sub> + ... + Θ<sub>d</sub>x<sub>d</sub>, where Θ represents the learned parameters."
+  },
+  {
+    "question": "How is the \"goodness\" of a hypothesis evaluated in regression, and what is a common loss function?",
+    "answer": "The goodness of a hypothesis is measured by its ability to predict future data accurately. This is often quantified using a loss function, which compares the predicted value (guess) with the actual value. A common choice is the squared loss: (guess - actual)². Training error and validation/test error are used to assess performance."
+  },
+  {
+    "question": "How does learning occur in machine learning, given data and a hypothesis class?",
+    "answer": "Learning involves selecting a \"good\" hypothesis (a set of parameters Θ) from the hypothesis class that minimizes the error on the training data.  This selected hypothesis is then used to make predictions on new data."
+  },
+  {
+    "question": "What is the goal in linear regression, and how is the \"dumbest algorithm\" (random search) implemented?",
+    "answer": "The goal is to find the hypothesis (h) with the lowest error. Random search involves repeatedly generating random hypotheses, evaluating their error, and keeping track of the best one found. This method is simple but inefficient, especially in high dimensions."
+  },
+  {
+    "question": "What is an alternative approach to random search in linear regression, and why is it not always straightforward?",
+    "answer": "An alternative is to consider all hypotheses and choose the one with the lowest training error. This isn't always easy, but it's feasible for linear regression with squared loss due to its specific mathematical properties."
+  },
+  {
+    "question": "How is the training error expressed in linear regression with squared loss and an extra \"1\" in the feature vector?",
+    "answer": "The training error is expressed as the average squared difference between the predicted values and the actual labels over the training data. By adding a \"1\" to the feature vector, the intercept term (Θ₀) can be incorporated into the matrix multiplication."
+  },
+  {
+    "question": "What is the nature of the cost function J(Θ) in linear regression, and how is it minimized?",
+    "answer": "J(Θ) is a quadratic function, often visualized as a \"bowl\" shape. It's minimized by finding the point where its gradient is zero, assuming the function \"curves up\".  This leads to a direct solution for Θ."
+  },
+  {
+    "question": "What are the properties of the optimal solution Θ* in linear regression?",
+    "answer": "If Θ* exists, it's the unique minimizer of J(Θ).  It is calculated as (XᵀX)^-1 XᵀY. It's important to note that Θ* might not exist if XᵀX is not invertible."
+  },
+  {
+    "question": "When might the direct solution for linear regression not exist, and why?",
+    "answer": "The direct solution might not exist if XᵀX is not invertible, which occurs when X is not full rank. This can happen if the number of data points is less than the number of features (n < d) or if there's linear dependency among the features."
+  },
+  {
+    "question": "What is regularization, and why is it used in linear regression?",
+    "answer": "Regularization is a technique to prevent overfitting by adding a penalty term to the cost function. It encourages simpler models by favoring smaller parameter values (closer to zero), leading to better generalization."
+  },
+  {
+    "question": "What is ridge regression, and how does it implement regularization?",
+    "answer": "Ridge regression is a form of regularized linear regression that adds a squared penalty term (proportional to λ) to the cost function, penalizing large magnitudes of the parameters (Θ)."
+  },
+  {
+    "question": "How is the hyperparameter λ chosen in ridge regression?",
+    "answer": "The hyperparameter λ controls the strength of regularization. It is typically chosen using cross-validation to minimize the error on unseen data."
+  },
+  {
+    "question": "Why is it incorrect to use test data for choosing hyperparameters?",
+    "answer": "Using test data for hyperparameter selection leads to overly optimistic performance estimates, as the model becomes tuned to the test set, failing to generalize to truly unseen data."
+  },
+  {
+    "question": "What is the purpose of model evaluation, and how does it differ from model training?",
+    "answer": "Model evaluation aims to estimate the model's performance on unseen data *without* using the test set.  It provides a performance measure but doesn't involve training or changing the model itself."
+  },
+  {
+    "question": "What is the validation data approach for choosing hyperparameters?",
+    "answer": "A portion of the training data is held out as \"validation data\".  The model is trained on the remaining training data, and the hyperparameters are chosen to minimize the error on the validation set."
+  },
+  {
+    "question": "What is k-fold cross-validation, and how does it work?",
+    "answer": "K-fold cross-validation divides the training data into k folds.  The model is trained k times, each time using k-1 folds for training and the remaining fold for validation.  The average error across all folds provides a more robust performance estimate."
+  },
+  {
+    "question": "What are some important considerations when using cross-validation?",
+    "answer": "It's good practice to shuffle the data before splitting into folds. Cross-validation is a way to \"reuse\" data and evaluate the learning algorithm itself rather than a specific hypothesis.  It can be used in conjunction with other techniques for hyperparameter tuning and model selection."
+  }
+]
