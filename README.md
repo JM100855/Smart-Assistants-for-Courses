@@ -6,13 +6,13 @@ accurately extract latex equations, which are essential for our use case. After 
 
 ## HOW TO NAVIGATE THE CODE
 
-The FinalReportContent folder contains all the structured code Folder Structure: 
+The ####FinalReportContent folder contains all the structured code Folder Structure: 
 
 1.	Data_Post-Restructuring_with_Additional_Contextual_Tags_for_Question_Answer_Pairs →      Adding Contextual Tags and Data Processing 
 2.	GeminiPrompt_QuestionGeneration_and_Training_Validation_Split → The Gemini Prompt and the Training Validation Split 
 3.	Training and Hyperparameter Tuning → Training and Hyperparameter Tuning 
 
-The DeepLearning_FinalProject folder contains all the experimental code that we wrote for our project, additionally, it also contains the *pdf extracted data* (input to the above folder structure) 
+The ####DeepLearning_FinalProject folder contains all the experimental code that we wrote for our project, additionally, it also contains the *pdf extracted data* (input to the above folder structure) 
 
 Where to find the pdf extracted data? 
 Since we wrote scripts on top of MINERU, the extracted data jsons can be found under similar hierarchy:
