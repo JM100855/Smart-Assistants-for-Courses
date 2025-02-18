@@ -17,3 +17,5 @@ The DeepLearning_FinalProject folder contains all the experimental code that we 
 Where to find the pdf extracted data? 
 Since we wrote scripts on top of MINERU, the extracted data jsons can be found under similar hierarchy:
  mineru_extract-kit>chapter1-6>MIT6390Notes_Chapter{i}>auto>MIT6390Not es_Chapter{i}_content_list.json
+
+Project Report document is the pdf file : Smart Assistants for Courses A Complete Guide.pdf
